@@ -1,0 +1,15 @@
+buffer_size: 25000
+window: 5s
+collections:
+  - name: request_count_by_pod
+    description: "Request count by pod"
+    aggregation: "count"
+    event: "request_latency_ms"
+    labels: ["pod"]
+
+  - name: request_latency_ms
+    description: "Request latency in ms distribution"
+    aggregation: "histogram"
+    event: "request_latency_ms"
+    labels: ["pod"]
+    buckets: [0, 100, 200, 300]

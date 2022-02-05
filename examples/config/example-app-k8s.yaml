@@ -1,0 +1,23 @@
+apiVersion: apps/v1 # for versions before 1.8.0 use extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: events2prom-example
+  namespace: events2prom
+spec:
+  selector:
+    matchLabels:
+      name: events2prom-example
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        name: events2prom-example
+    spec:
+      containers:
+      - name: events2prom-example
+        image: public.ecr.aws/w6n7a8r1/events2prom-example
+        env:
+        - name: EVENTS2PROM_NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP

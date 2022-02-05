@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: events2prom
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: events2prom
+  namespace: events2prom
+spec:
+  selector:
+    matchLabels:
+      name: events2prom
+  template:
+    metadata:
+      labels:
+        name: events2prom
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "6677"
+    spec:
+      containers:
+      - name: events2prom
+        image: public.ecr.aws/w6n7a8r1/events2prom:latest
+        command:
+        - "/ko-app/events2prom"
+        - "-config=/config/events2prom.yaml"
+        ports:
+        - containerPort: 6677 # admin
+        - containerPort: 6678 # events
+          hostPort: 6678
+          protocol: UDP
+        volumeMounts:
+        - name: events2prom-config-vol
+          mountPath: /config
+          readOnly: true
+      volumes:
+      - name: events2prom-config-vol
+        configMap:
+          name: events2prom-config
+          items:
+            - key: events2prom-config
+              path: events2prom.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: events2prom-ingestion
+  namespace: events2prom
+spec:
+  ports:
+    - name: events2prom
+      port: 6678
+      protocol: UDP
+  selector:
+    name: events2prom
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: events2prom-config
+  namespace: events2prom
+data:
+  events2prom-config: |
+    collections:
+      - name: "request_count_by_pod"
+        description: "Request count by pod"
+        aggregation: "count"
+        event: "request_latency_ms"
+        labels: ["pod"]
