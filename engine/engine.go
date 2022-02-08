@@ -51,16 +51,15 @@ type Loop struct {
 	bufferIndex       int           // access only in Run
 	BufferFlushWindow time.Duration
 	maxBufferSize     int
-	lastHandled       time.Time // access only in Run; last time events have been handled
 
-	incomingEvents chan event.Event
-	newCollections chan Collection
-	removals       chan string
+	incomingEvents <-chan event.Event
+	newCollections <-chan Collection
+	removals       <-chan string
 
 	promRegistry *prometheus.Registry
 }
 
-func NewLoop(bufferSize int, e chan event.Event, c chan Collection, r chan string) *Loop {
+func NewLoop(bufferSize int, e <-chan event.Event, c <-chan Collection, r <-chan string) *Loop {
 	if bufferSize == 0 {
 		bufferSize = defaultBufferSize
 	}
@@ -72,7 +71,6 @@ func NewLoop(bufferSize int, e chan event.Event, c chan Collection, r chan strin
 		maxBufferSize:     bufferSize,
 		bufferIndex:       0,
 		BufferFlushWindow: 5 * time.Second,
-		lastHandled:       time.Now(),
 		incomingEvents:    e,
 		newCollections:    c,
 		removals:          r,
@@ -81,6 +79,9 @@ func NewLoop(bufferSize int, e chan event.Event, c chan Collection, r chan strin
 }
 
 func (l *Loop) Run() {
+	timer := time.NewTimer(l.BufferFlushWindow)
+	defer timer.Stop()
+
 	for {
 		select {
 		case c := <-l.newCollections:
@@ -88,26 +89,13 @@ func (l *Loop) Run() {
 		case name := <-l.removals:
 			l.disableCollection(name)
 		case e := <-l.incomingEvents:
-			// Ignore incoming events if there are no processors.
-			if len(l.processors) == 0 {
-				continue
+			l.incomingEvent(e)
+			if l.bufferIndex == l.maxBufferSize {
+				l.flush(timer)
 			}
-			// Ignore incoming event if it's not currently collected.
-			_, ok := l.allEvents[e.Name]
-			if !ok {
-				continue
-			}
-
-			l.buffer[l.bufferIndex] = e
-			l.bufferIndex++
-			if l.bufferIndex == l.maxBufferSize || time.Since(l.lastHandled) >= l.BufferFlushWindow {
-				events := l.buffer[:l.bufferIndex]
-				for _, p := range l.processors {
-					p.Handle(events)
-				}
-				log.Printf("Flushed %d events.", l.bufferIndex)
-				l.bufferIndex = 0
-				l.lastHandled = time.Now()
+		case <-timer.C:
+			if l.bufferIndex != 0 {
+				l.flush(timer)
 			}
 		}
 	}
@@ -166,6 +154,33 @@ func (l *Loop) disableCollection(name string) {
 	log.Printf("Disabled collection: %q", name)
 }
 
+// incomingEvent should only be called from Run.
+func (l *Loop) incomingEvent(e event.Event) {
+	// Ignore incoming events if there are no processors.
+	if len(l.processors) == 0 {
+		return
+	}
+	// Ignore incoming event if it's not currently collected.
+	_, ok := l.allEvents[e.Name]
+	if !ok {
+		return
+	}
+
+	l.buffer[l.bufferIndex] = e
+	l.bufferIndex++
+}
+
+// flush should only be called from Run.
+func (l *Loop) flush(timer *time.Timer) {
+	timer.Reset(l.BufferFlushWindow)
+	events := l.buffer[:l.bufferIndex]
+	for _, p := range l.processors {
+		p.Handle(events)
+	}
+	log.Printf("Flushed %d events.", l.bufferIndex)
+	l.bufferIndex = 0
+}
+
 func (l *Loop) Registry() *prometheus.Registry {
 	return l.promRegistry
 }
@@ -190,8 +205,7 @@ func isMatch(e event.Event, name string, labels []string) bool {
 		return false
 	}
 	for _, label := range labels {
-		_, ok := e.Labels[label]
-		if !ok {
+		if _, ok := e.Labels[label]; !ok {
 			return false
 		}
 	}

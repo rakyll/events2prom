@@ -52,11 +52,10 @@ func (p *CountProcessor) Handle(events []event.Event) {
 	p.samplesMu.Lock()
 	defer p.samplesMu.Unlock()
 
-	col := p.col
 	for _, e := range events {
-		if isMatch(e, col.Event, col.Labels) {
-			labelVals := make([]string, len(col.Labels))
-			for i, label := range col.Labels {
+		if isMatch(e, p.col.Event, p.col.Labels) {
+			labelVals := make([]string, len(p.col.Labels))
+			for i, label := range p.col.Labels {
 				labelVals[i] = e.Labels[label]
 			}
 			key := mapKeyForSample(p.col.Labels, labelVals)
