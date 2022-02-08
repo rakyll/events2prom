@@ -21,7 +21,7 @@ $ docker run -it -p 6677:6677 -p 6678:6678/udp \
 Then, run the example to generate events:
 
 ```
-$ docker run -it -p 6678:6678/udp public.ecr.aws/q1p8v8z2/events2prom-example
+$ docker run -it --network host public.ecr.aws/w6n7a8r1/events2prom-example
 ```
 
 Open http://127.0.0.1:6677/metrics to see the aggregated metrics.
