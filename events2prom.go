@@ -28,8 +28,8 @@ var defaultClient *Client
 
 func init() {
 	var err error
-	if nodeIP := os.Getenv("EVENTS2PROM_NODE_IP"); nodeIP != "" {
-		defaultAddr = nodeIP + ":6678"
+	if host := os.Getenv("EVENTS2PROM_HOST"); host != "" {
+		defaultAddr = host + ":6678"
 	}
 	// TODO(jbd): Only dial if Publish is called.
 	defaultClient, err = NewClient(defaultAddr)

@@ -17,7 +17,7 @@ spec:
       - name: events2prom-example
         image: public.ecr.aws/w6n7a8r1/events2prom-example
         env:
-        - name: EVENTS2PROM_NODE_IP
+        - name: EVENTS2PROM_HOST
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
