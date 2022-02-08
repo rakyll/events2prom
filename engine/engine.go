@@ -123,6 +123,8 @@ func (l *Loop) enableCollection(c Collection) {
 	switch c.Aggregation {
 	case "count":
 		p = NewCountProcessor(c)
+	case "sum":
+		p = NewSumProcessor(c)
 	case "histogram":
 		if len(c.Buckets) == 0 {
 			log.Printf("Failed to enable %q with no buckets", c.Name)
