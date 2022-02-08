@@ -5,6 +5,8 @@ publish metrics in the Prometheus exposition format.
 It allows enabling and disabling aggregations in runtime
 and can support high dimensional cases.
 
+Note: This is an experimental project, no stability guarantees.
+
 ## Usage
 
 ```
