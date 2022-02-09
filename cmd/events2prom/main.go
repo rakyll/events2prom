@@ -15,6 +15,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -56,6 +57,9 @@ func main() {
 		}
 	})
 	http.Handle("/metrics", promhttp.HandlerFor(loop.Registry(), promhttp.HandlerOpts{}))
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "ok")
+	})
 
 	// Register collections if any.
 	for _, col := range conf.Collections {
