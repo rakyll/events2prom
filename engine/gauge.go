@@ -54,13 +54,13 @@ func (p *GaugeProcessor) Handle(events []event.Event) {
 
 	for _, e := range events {
 		if isMatch(e, p.col.Event, p.col.Labels) {
-			labelValse := make([]string, len(p.col.Labels))
+			labelVals := make([]string, len(p.col.Labels))
 			for i, label := range p.col.Labels {
-				labelValse[i] = e.Labels[label]
+				labelVals[i] = e.Labels[label]
 			}
-			key := mapKeyForSample(p.col.Labels, labelValse)
+			key := mapKeyForSample(p.col.Labels, labelVals)
 			p.samples[key] = gaugeSample{
-				labelValues: labelValse,
+				labelValues: labelVals,
 				value:       e.Value,
 			}
 		}
