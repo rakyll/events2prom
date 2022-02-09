@@ -1,5 +1,7 @@
 # events2prom 🧹
 
+[![Build](https://github.com/rakyll/events-to-prom/actions/workflows/go.yml/badge.svg)](https://github.com/rakyll/events-to-prom/actions/workflows/go.yml)
+
 events2prom collects events and aggregates them in memory to
 publish metrics in the Prometheus exposition format.
 It allows enabling and disabling aggregations in runtime
