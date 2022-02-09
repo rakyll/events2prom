@@ -37,7 +37,7 @@ func (h *Histogram) Add(v float64) {
 }
 
 func (h *Histogram) Buckets() map[float64]uint64 {
-	m := make(map[float64]uint64)
+	m := make(map[float64]uint64, len(h.buckets))
 	var le uint64
 	for i, b := range h.buckets {
 		le += h.counts[i]
