@@ -23,8 +23,6 @@ import (
 	"github.com/rakyll/events-to-prom/event"
 )
 
-// TODO(jbd): We only support cumulative for now, think about deltas with a time window.
-
 const defaultBufferSize = 32 * 1024
 
 type Processor interface {
@@ -45,7 +43,6 @@ type Collection struct {
 type Loop struct {
 	processors map[string]Processor // access only in Run
 	allEvents  map[string]struct{}  // access only in Run
-	// TODO(jbd): Think about organizing processors by event.
 
 	buffer            []event.Event // access only in Run
 	bufferIndex       int           // access only in Run
