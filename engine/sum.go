@@ -55,11 +55,7 @@ func (p *SumProcessor) Handle(events []event.Event) {
 	col := p.col
 	for _, e := range events {
 		if isMatch(e, col.Event, col.Labels) {
-			labelVals := make([]string, len(col.Labels))
-			for i, label := range col.Labels {
-				labelVals[i] = e.Labels[label]
-			}
-			key := mapKeyForSample(p.col.Labels, labelVals)
+			key, labelVals := generateKeyLabelVals(p.col, e)
 			_, ok := p.samples[key]
 			if !ok {
 				p.samples[key] = sumSample{

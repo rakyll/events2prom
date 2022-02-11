@@ -189,18 +189,6 @@ func (l *Loop) Registry() *prometheus.Registry {
 	return l.promRegistry
 }
 
-func mapKeyForSample(labels, labelValues []string) string {
-	// Note: labels and labelValues are already sorted.
-	var buf bytes.Buffer
-	for i, label := range labels {
-		buf.WriteString(label)
-		buf.WriteByte('_')
-		buf.WriteString(labelValues[i])
-		buf.WriteByte('_')
-	}
-	return buf.String()
-}
-
 func isMatch(e event.Event, name string, labels []string) bool {
 	if name != e.Name {
 		return false
@@ -214,4 +202,24 @@ func isMatch(e event.Event, name string, labels []string) bool {
 		}
 	}
 	return true
+}
+
+func generateKeyLabelVals(col Collection, e event.Event) (key string, labelVals []string) {
+	labelVals = make([]string, len(col.Labels))
+	for i, label := range col.Labels {
+		labelVals[i] = e.Labels[label]
+	}
+	return generateKey(col.Labels, labelVals), labelVals
+}
+
+func generateKey(labels, labelValues []string) string {
+	// Note: labels and labelValues are already sorted.
+	var buf bytes.Buffer
+	for i, label := range labels {
+		buf.WriteString(label)
+		buf.WriteByte('_')
+		buf.WriteString(labelValues[i])
+		buf.WriteByte('_')
+	}
+	return buf.String()
 }

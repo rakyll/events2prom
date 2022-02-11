@@ -42,7 +42,7 @@ func BenchmarkMapKeyForSample(b *testing.B) {
 	values := []string{"us-east-1", "us-east-1c"}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		mapKeyForSample(labels, values)
+		generateKey(labels, values)
 	}
 }
 

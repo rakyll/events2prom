@@ -55,11 +55,7 @@ func (p *HistogramProcessor) Handle(events []event.Event) {
 
 	for _, e := range events {
 		if isMatch(e, p.col.Event, p.col.Labels) {
-			labelVals := make([]string, len(p.col.Labels))
-			for i, label := range p.col.Labels {
-				labelVals[i] = e.Labels[label]
-			}
-			key := mapKeyForSample(p.col.Labels, labelVals)
+			key, labelVals := generateKeyLabelVals(p.col, e)
 			_, ok := p.samples[key]
 			if !ok {
 				p.samples[key] = histogramSample{
