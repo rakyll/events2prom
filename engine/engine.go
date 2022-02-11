@@ -89,7 +89,7 @@ func (l *Loop) Run() {
 		case name := <-l.removals:
 			l.disableCollection(name)
 		case e := <-l.incomingEvents:
-			l.incomingEvent(e)
+			l.handleEvent(e)
 			if l.bufferIndex == l.maxBufferSize {
 				l.flush(timer)
 			}
@@ -158,8 +158,8 @@ func (l *Loop) disableCollection(name string) {
 	log.Printf("Disabled collection: %q", name)
 }
 
-// incomingEvent should only be called from Run.
-func (l *Loop) incomingEvent(e event.Event) {
+// handleEvent should only be called from Run.
+func (l *Loop) handleEvent(e event.Event) {
 	// Ignore incoming events if there are no processors.
 	if len(l.processors) == 0 {
 		return
