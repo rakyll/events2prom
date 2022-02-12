@@ -16,7 +16,6 @@ package engine
 import (
 	"bytes"
 	"log"
-	"sort"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -115,7 +114,6 @@ func (l *Loop) enableCollection(c Collection) {
 		return
 	}
 
-	// TODO(jbd): Support sum.
 	var p Processor
 	switch c.Aggregation {
 	case "count":
@@ -129,7 +127,6 @@ func (l *Loop) enableCollection(c Collection) {
 			log.Printf("Failed to enable %q with no buckets", c.Name)
 			return
 		}
-		sort.Float64s(c.Buckets)
 		p = NewHistogramProcessor(c)
 	default:
 		log.Printf("Unknown aggregation (%q) for %q", c.Aggregation, c.Name)

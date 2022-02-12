@@ -14,6 +14,7 @@
 package engine
 
 import (
+	"sort"
 	"sync"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -38,6 +39,7 @@ type HistogramProcessor struct {
 }
 
 func NewHistogramProcessor(c Collection) *HistogramProcessor {
+	sort.Float64s(c.Buckets)
 	return &HistogramProcessor{
 		col:            c,
 		samples:        make(map[string]histogramSample, 64),
