@@ -18,8 +18,8 @@ import (
 	"math/rand"
 	"time"
 
-	events2prom "github.com/rakyll/events-to-prom"
-	"github.com/rakyll/events-to-prom/event"
+	events2prom "github.com/rakyll/events2prom"
+	"github.com/rakyll/events2prom/event"
 )
 
 var pods = []string{"pod-1e0", "pod-1ff", "pod-def"}

@@ -20,8 +20,8 @@ import (
 	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/rakyll/events-to-prom/engine"
-	"github.com/rakyll/events-to-prom/event"
+	"github.com/rakyll/events2prom/engine"
+	"github.com/rakyll/events2prom/event"
 
 	_ "net/http/pprof"
 )

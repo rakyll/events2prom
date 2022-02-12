@@ -19,7 +19,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/rakyll/events-to-prom/event"
+	"github.com/rakyll/events2prom/event"
 )
 
 var defaultAddr = "0.0.0.0:6678"

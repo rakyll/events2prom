@@ -1,4 +1,4 @@
-module github.com/rakyll/events-to-prom
+module github.com/rakyll/events2prom
 
 go 1.16
 

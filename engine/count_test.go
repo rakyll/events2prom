@@ -17,7 +17,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rakyll/events-to-prom/event"
+	"github.com/rakyll/events2prom/event"
 	"github.com/stretchr/testify/assert"
 )
 
