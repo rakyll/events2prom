@@ -17,7 +17,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/rakyll/events-to-prom/engine"
+	"github.com/rakyll/events2prom/engine"
 	"gopkg.in/yaml.v2"
 )
 

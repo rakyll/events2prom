@@ -17,7 +17,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rakyll/events-to-prom/event"
+	"github.com/rakyll/events2prom/event"
 )
 
 func BenchmarkIsMatch(b *testing.B) {

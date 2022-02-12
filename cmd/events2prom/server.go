@@ -19,8 +19,8 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/rakyll/events-to-prom/engine"
-	"github.com/rakyll/events-to-prom/event"
+	"github.com/rakyll/events2prom/engine"
+	"github.com/rakyll/events2prom/event"
 )
 
 type eventsServer struct {

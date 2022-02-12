@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/rakyll/events-to-prom/event"
+	"github.com/rakyll/events2prom/event"
 )
 
 const defaultBufferSize = 32 * 1024
