@@ -27,7 +27,7 @@ var fastParser fastjson.Parser
 
 type Event struct {
 	Name      string            `json:"event,omitempty"`
-	Labels    map[string]string `json:"labels,omitempty"`
+	Labels    map[string]string `json:"labels,omitempty"` // label keys should match the regex [a-zA-Z0-9_]*
 	Value     float64           `json:"value,omitempty"`
 	Timestamp time.Time         `json:"ts,omitempty"`
 }

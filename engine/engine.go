@@ -22,6 +22,8 @@ import (
 	"github.com/rakyll/events2prom/event"
 )
 
+// TODO(jbd): Sanitize characters not allowed in collection names and labels.
+
 const defaultBufferSize = 32 * 1024
 
 type Processor interface {
